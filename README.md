@@ -8,7 +8,7 @@
 > * pip install pdfkit
 > * Windows系统安装wkhtmltopdf [下载地址](http://wkhtmltopdf.org/downloads.html)，将该程序的执行路径加入到系统环境 $PATH 变量中
 > * Ubuntu系统安装wkhtmltopdf：sudo apt-get install wkhtmltopdf
-> * Arch系统安装wkhtmltopdf：  pacman -S wkhtmltopdf
+> * Arch系统安装wkhtmltopdf：sudo pacman -S wkhtmltopdf
 
 ## 运行：
 ```shell
