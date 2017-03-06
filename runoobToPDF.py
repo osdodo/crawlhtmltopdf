@@ -98,9 +98,8 @@ class runoobToPDF(object):
             yield url
     def parseBody(self, response):
         try:
-            soup = BeautifulSoup(response.content, 'lxml')
-            body = soup.find_all(class_="article-body")
-            html = str(body)
+            soup = BeautifulSoup(response.content, 'lxml') 
+            html = str(soup.find_all(class_="article-body"))
             html = htmlTemplate.format(content=html).encode("utf-8")
             return html
         except:
