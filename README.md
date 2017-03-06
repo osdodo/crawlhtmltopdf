@@ -6,7 +6,7 @@
 > * pip install beautifulsoup4
 > * pip install lxml
 > * pip install pdfkit
-> * Windows系统的安装wkhtmltopdf [下载地址](http://wkhtmltopdf.org/downloads.html)，把该程序的执行路径加入到系统环境 $PATH 变量中
+> * Windows系统安装wkhtmltopdf [下载地址](http://wkhtmltopdf.org/downloads.html)，把该程序的执行路径加入到系统环境 $PATH 变量中
 > * Ubuntu系统安装：sudo apt-get install wkhtmltopdf
 > * Arch系统安装：pacman -S wkhtmltopdf
 
