@@ -7,7 +7,6 @@ import pdfkit
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse  
-from time import sleep
 htmlTemplate = """
 <!DOCTYPE html>
 <html lang="en">
