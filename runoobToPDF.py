@@ -60,10 +60,10 @@ class runoobToPDF(object):
             except:
                 if retriesNum>0:
                     time.sleep(1)
-                    print(u"获取网页失败，1s后将重新获取")
+                    print("获取网页失败，1s后将重新获取")
                     return self.crawl(url,retriesNum-1)  
                 else:
-                    print(u"开始使用代理")
+                    print("开始使用代理")
                     time.sleep(1)
                     IP="".join(str(random.choice(self.ipList)).strip())
                     proxy={"http":IP}
@@ -79,11 +79,11 @@ class runoobToPDF(object):
                 if retriesNum>0:
                     time.sleep(1)
                     IP="".join(str(random.choice(self.ipList)).strip())
-                    print(u"正在更换代理，1s后将重新获取")
-                    print(u"当前代理是：",proxy)
+                    print("正在更换代理，1s后将重新获取")
+                    print("当前代理是：",proxy)
                     return self.crawl(url,proxy,retriesNum-1)
                 else:
-                    print(u"代理错误，取消代理")
+                    print("代理错误，取消代理")
                     return self.crawl(url,3)       
     def parseMenu(self, response):
         soup = BeautifulSoup(response.content, "lxml")
@@ -120,7 +120,7 @@ class runoobToPDF(object):
         for htmlName in htmls:
             os.remove(htmlName)
         totalTime = time.time() - startTime
-        print(u"总共耗时：%f 秒" % totalTime)
+        print("总共耗时：%f 秒" % totalTime)
 if __name__ == '__main__':
     print("起始地址：")
     startUrl = input()
