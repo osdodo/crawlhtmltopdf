@@ -49,7 +49,7 @@ class runoobToPDF(object):
                 "Opera/9.80 (Android 2.3.4; Linux; Opera Mobi/build-1107180945; U; en-GB) Presto/2.8.149 Version/11.10",
                 "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
             ]  
-    def crawl(self, url,proxy=None,retriesNum=5):
+    def crawl(self, url,proxy=None,retriesNum=3):
         userAgent=random.choice(self.userAgentList)
         header={"User-Agent":userAgent}
         if proxy==None:
@@ -70,8 +70,6 @@ class runoobToPDF(object):
                     return self.crawl(url,proxy)
         else:
             try:
-                IP="".join(str(random.choice(self.ipList)).strip())   
-                proxy={"http":IP} 
                 print(url) 
                 response=requests.get(url,headers=header,proxies=proxy)
                 return response
@@ -79,6 +77,7 @@ class runoobToPDF(object):
                 if retriesNum>0:
                     time.sleep(1)
                     IP="".join(str(random.choice(self.ipList)).strip())
+                    proxy={"http":IP} 
                     print("正在更换代理，1s后将重新获取")
                     print("当前代理是：",proxy)
                     return self.crawl(url,proxy,retriesNum-1)
