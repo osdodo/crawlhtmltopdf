@@ -95,14 +95,10 @@ class runoobToPDF(object):
                 url = "".join([self.domain, url]) 
             yield url
     def parseBody(self, response):
-        try:
             soup = BeautifulSoup(response.content, 'lxml') 
             html = str(soup.find_all(class_="article-body"))
             html = htmlTemplate.format(content=html).encode("utf-8")
-            return html
-        except:
-            print("解析失败")
-            return            
+            return html          
     def main(self):
         startTime = time.time()
         options = {
