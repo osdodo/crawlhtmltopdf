@@ -121,6 +121,6 @@ if __name__ == '__main__':
     startUrl = input()
     print("保存文件名(不需要后缀名)：")
     fileName = input()
-    if startUrl !='' and fileName !='':
+    if startUrl and fileName :
         crawler = runoobToPDF(fileName, startUrl)
         crawler.main()
