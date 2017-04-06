@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 import os
 import re
 import time
@@ -14,7 +13,7 @@ htmlTemplate = """
     <meta charset="UTF-8">
 </head>
 <body>
-{content}
+{}
 </body>
 </html>
 """
@@ -82,7 +81,7 @@ class runoobToPDF(object):
                     print("当前代理是：",proxy)
                     return self.crawl(url,proxy,retriesNum-1)
                 else:
-                    print("代理错误，取消代理")
+                    print("代理失败，取消代理")
                     return self.crawl(url,3)       
     def parseMenu(self, response):
         soup = BeautifulSoup(response.content, "lxml")
@@ -97,13 +96,9 @@ class runoobToPDF(object):
     def parseBody(self, response):
             soup = BeautifulSoup(response.content, 'lxml') 
             html = str(soup.find_all(class_="article-body"))
-            html = htmlTemplate.format(content=html).encode("utf-8")
+            html = htmlTemplate.format(html).encode("utf-8")
             return html          
     def main(self):
-        startTime = time.time()
-        options = {
-        'quiet': ''
-        }
         htmls = []
         for index, url in enumerate(self.parseMenu(self.crawl(self.startUrl))):
             html = self.parseBody(self.crawl(url))
@@ -111,11 +106,10 @@ class runoobToPDF(object):
             with open(htmlName, 'wb') as f:
                 f.write(html)
             htmls.append(htmlName)
-        pdfkit.from_file(htmls, self.fileName + ".pdf", options=options)
+        pdfkit.from_file(htmls, self.fileName + ".pdf")
         for htmlName in htmls:
             os.remove(htmlName)
-        totalTime = time.time() - startTime
-        print("总共耗时：%f 秒" % totalTime)
+        print("OK")
 if __name__ == '__main__':
     print("起始地址：")
     startUrl = input()
