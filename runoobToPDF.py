@@ -65,7 +65,6 @@ class runoobToPDF(object):
 
     def validateIp(self,proxyIP):  
         url = "https://www.baidu.com/"  
-        socket.setdefaulttimeout(3)  
         try:  
             proxy_temp = {"http":proxyIP.strip()}
             res = requests.get(url,proxies=proxy_temp)
