@@ -13,6 +13,7 @@ htmlTemplate = """
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://www.runoob.com/wp-content/themes/runoob/style.css?v=1.12" type="text/css" media="all" />
 </head>
 <body>
 {}
