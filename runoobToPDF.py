@@ -4,7 +4,6 @@ import time
 import random
 import pdfkit
 import requests
-import socket
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse  
 
