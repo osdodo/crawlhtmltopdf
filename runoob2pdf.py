@@ -7,7 +7,6 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse 
 
-
 htmlTemplate = """
 <!DOCTYPE html>
 <html lang="en">
@@ -65,10 +64,9 @@ class runoob2pdf(object):
 
     def validateIp(self,proxyIP,timeout=0.5): 
         testUrl = 'https://www.baidu.com/'
-        proxyTemp = {"http":proxyIP.strip()}
         start = time.time() 
         try:
-            res = requests.get(testUrl,proxies=proxyTemp)
+            res = requests.get(testUrl,proxies = {"http":proxyIP.strip()})
         except:  
             print(f"抛弃IP:{proxyIP}，\t 严重超时.")
             return     
