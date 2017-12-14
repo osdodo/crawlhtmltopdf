@@ -122,8 +122,9 @@ class runoob2pdf(object):
         for a in links:
             url = a.get("href")
             if not url.startswith("http"):
-                yield "".join([self.domain, url]) 
-
+                url = "".join([self.domain, url]) 
+            yield url
+            
     def parseBody(self, response):
         soup = BeautifulSoup(response.content, 'lxml') 
         html = str(soup.find_all(class_="article-body")[0])
