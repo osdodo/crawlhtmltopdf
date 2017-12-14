@@ -5,7 +5,8 @@ import random
 import pdfkit
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse  
+from urllib.parse import urlparse 
+
 
 htmlTemplate = """
 <!DOCTYPE html>
@@ -19,10 +20,10 @@ htmlTemplate = """
 </body>
 </html>
 """
-class runoobToPDF(object):   
+class runoob2pdf(object):   
     def __init__(self,startUrl): 
         self.startUrl = startUrl
-        self.domain = '{uri.scheme}://{uri.netloc}'.format(uri=urlparse(self.startUrl))
+        self.domain = f'{urlparse(self.startUrl).scheme}://{urlparse(self.startUrl).netloc}'
         self.fileName = self.startUrl.split('/')[-1].split('.')[0]
         self.ipList=[]
         self.userAgentList=[
@@ -47,63 +48,67 @@ class runoobToPDF(object):
             ]  
 
     def getProxyIp(self):
-        userAgent=random.choice(self.userAgentList)
-        header={"User-Agent":userAgent}
-        for i in range(3):  
+        userAgent = random.choice(self.userAgentList)
+        header = {"User-Agent":userAgent}
+        for i in range(2):  
             try:  
-                url = 'http://www.xicidaili.com/wt/{}'.format(str(i))
-                response=requests.get(url,headers=header)
+                url = f'http://www.xicidaili.com/wt/{i}'
+                response = requests.get(url,headers=header)
                 soup = BeautifulSoup(response.content, "lxml")
-                ips = soup.findAll('tr')  
-                for i in range(1,len(ips)):  
-                    ip = ips[i]  
-                    tds = ip.findAll("td")  
-                    proxyIP = '{}:{}'.format(tds[1].contents[0],tds[2].contents[0])
+                trs = soup.findAll('tr')  
+                for i in range(1,len(trs)):  
+                    tds = trs[i].findAll("td")   
+                    proxyIP = f'{tds[1].contents[0]}:{tds[2].contents[0]}'
                     yield proxyIP
             except:  
                 continue  
 
-    def validateIp(self,proxyIP):  
-        url = "https://www.baidu.com/"  
-        try:  
-            proxy_temp = {"http":proxyIP.strip()}
-            res = requests.get(url,proxies=proxy_temp)
-            print("可用IP：",proxyIP)
-            self.ipList.append(proxyIP)
+    def validateIp(self,proxyIP,timeout=0.5): 
+        testUrl = 'https://www.baidu.com/'
+        proxyTemp = {"http":proxyIP.strip()}
+        start = time.time() 
+        try:
+            res = requests.get(testUrl,proxies=proxyTemp)
         except:  
-            print("无用IP",proxyIP) 
-
-    def crawl(self, url,proxy=None,retriesNum=3):
-        userAgent=random.choice(self.userAgentList)
-        header={"User-Agent":userAgent}
-        if proxy==None:
+            print(f"抛弃IP:{proxyIP}，\t 严重超时.")
+            return     
+        passed = time.time() - start
+        if passed > timeout:
+            print(f"抛弃IP:{proxyIP}，\t 验证时间:{passed:{5}.{4}}秒.")
+        else:
+            print(f"可用IP:{proxyIP}，\t 验证时间:{passed:{5}.{4}}秒.")
+            self.ipList.append(proxyIP)   
+        
+    def crawl(self,url,proxy=None,retriesNum=3):
+        userAgent = random.choice(self.userAgentList)
+        header = {"User-Agent":userAgent}
+        if proxy == None:
             try:
                 print(url)
-                response=requests.get(url,headers=header)
+                response = requests.get(url,headers=header)
                 return response
             except:
                 if retriesNum>0:
-                    time.sleep(1)
                     print("获取网页失败，1s后将重新获取")
+                    time.sleep(1)
                     return self.crawl(url,retriesNum-1)  
                 else:
                     print("开始使用代理")
-                    time.sleep(1)
-                    IP= random.choice(self.ipList).strip()
-                    proxy={"http":IP}
+                    IP = random.choice(self.ipList).strip()
+                    proxy = {"http":IP}
                     return self.crawl(url,proxy)
         else:
             try:
                 print(url) 
-                response=requests.get(url,headers=header,proxies=proxy)
+                response = requests.get(url,headers=header,proxies=proxy)
                 return response
             except:
                 if retriesNum>0:
-                    time.sleep(1)
-                    IP= random.choice(self.ipList).strip()
-                    proxy={"http":IP} 
                     print("正在更换代理，1s后将重新获取")
-                    print("当前代理是：",proxy)
+                    time.sleep(1)
+                    IP = random.choice(self.ipList).strip()
+                    proxy = {"http":IP} 
+                    print(f"当前代理是：{proxy}")
                     return self.crawl(url,proxy,retriesNum-1)
                 else:
                     print("代理失败，取消代理")
@@ -117,42 +122,36 @@ class runoobToPDF(object):
         for a in links:
             url = a.get("href")
             if not url.startswith("http"):
-                url = "".join([self.domain, url]) 
-            yield url
+                yield "".join([self.domain, url]) 
 
     def parseBody(self, response):
         soup = BeautifulSoup(response.content, 'lxml') 
         html = str(soup.find_all(class_="article-body")[0])
-        def fn(m):
+        def func(m):
             if not m.group(2).startswith("http"):
                 return "".join([m.group(1), self.domain, m.group(2), m.group(3)])
             else:
                 return "".join([m.group(1), m.group(2), m.group(3)])  
         pattern = re.compile("(<img .*?src=\")(.*?)(\")")
-        html = pattern.sub(fn, html)
-        html = htmlTemplate.format(html).encode("utf-8")
-        return html  
+        return htmlTemplate.format(pattern.sub(func, html)).encode("utf-8") 
        
     def main(self):
-        startTime = time.time()
         for proxyIP in self.getProxyIp():
             self.validateIp(proxyIP)
         htmls = []
         for index, url in enumerate(self.parseMenu(self.crawl(self.startUrl))):
-            html = self.parseBody(self.crawl(url))
+            content = self.parseBody(self.crawl(url))
             htmlName = ".".join([str(index), "html"])
             with open(htmlName, 'wb') as f:
-                f.write(html)
+                f.write(content)
             htmls.append(htmlName)
         pdfkit.from_file(htmls, self.fileName + ".pdf")
-        for htmlName in htmls:
-            os.remove(htmlName)
-        totalTime = time.time() - startTime
-        print("总耗时：%f 秒" % totalTime)
+        for i in htmls:
+            os.remove(i)
 
 if __name__ == '__main__':
     print("起始地址：")
     startUrl = input()
     if startUrl:
-        crawler = runoobToPDF(startUrl)
+        crawler = runoob2pdf(startUrl)
         crawler.main()
