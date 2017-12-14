@@ -20,7 +20,10 @@ htmlTemplate = """
 </html>
 """
 class runoob2pdf(object):   
-    def __init__(self,startUrl): 
+    def __init__(self,startUrl):
+        """
+            :param startUrl: (e.g.,http://www.runoob.com/xml/xml-tutorial.html)
+        """ 
         self.startUrl = startUrl
         self.domain = f'{urlparse(self.startUrl).scheme}://{urlparse(self.startUrl).netloc}'
         self.fileName = self.startUrl.split('/')[-1].split('.')[0]
@@ -97,7 +100,6 @@ class runoob2pdf(object):
                     return self.crawl(url,proxy)
         else:
             try:
-                print(url) 
                 response = requests.get(url,headers=header,proxies=proxy)
                 return response
             except:
